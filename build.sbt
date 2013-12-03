@@ -13,3 +13,6 @@ libraryDependencies ++= Seq(
 )
 
 parallelExecution in Test := false
+
+publishTo := Some(Resolver.file("repo", file("repository"))(Patterns(true, Resolver.mavenStyleBasePattern)))
+
