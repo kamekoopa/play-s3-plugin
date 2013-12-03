@@ -1,5 +1,6 @@
 S3に接続するPlay2プラグイン(for 2.2.x)
 
+
 設定例(application.conf)
 
 aws {
@@ -16,3 +17,29 @@ aws {
 
 accessKey, secretKey, protocol, proxyHost, proxyPortはaws.*, aws.s3.*どちらにも指定可能。
 aws.s3.*になければaws.*を利用する(aws.s3.*の方が優先される)
+
+
+使う時
+
+sbt
+
+resolvers += "repo" at "http://kamekoopa.github.io/play-s3-plugin/repository/"
+
+libraryDependencies += "net.kamekoopa" %% "play-s3-plugin" % "0.1"
+
+Application(Scala)
+
+val pluginOpt = Play.current.plugin[Plugin]
+pluginOpt.map({ plugin =>
+  val obj = plugin.getClient.getObject("bucket", "key")
+  // some process
+})
+
+Apllication(Java)
+
+AmazonS3Client client = Play.application().plugin(Plugin.class).getClient();
+if(client != null) {
+  S3Object obj = client.getObject("bucket", "key");
+  // some process
+}
+
