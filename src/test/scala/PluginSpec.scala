@@ -80,6 +80,18 @@ class PluginSpec extends Specification {
       config.get.secretKey mustEqual "secretKey"
     }
 
+    "accessKeyとsecretKeyが設定されている" in new WithApplication(fakeApp(
+      "aws.s3.enabled" -> "true",
+      "aws.accessKey" -> "accessKey",
+      "aws.secretKey" -> "secretKey"
+    )) {
+
+      val credential = Config(playConf).get.credential
+
+      credential.getAWSAccessKeyId mustEqual "accessKey"
+      credential.getAWSSecretKey mustEqual "secretKey"
+    }
+
     "protocol設定がなければデフォルトでHTTPS" in new WithApplication(fakeApp(
       "aws.s3.enabled" -> "true",
       "aws.s3.accessKey" -> "accessKey",
@@ -144,6 +156,18 @@ class PluginSpec extends Specification {
       config.get.protocol mustEqual Protocol.HTTP
     }
 
+    "protocolが設定オブジェクトに設定されている" in new WithApplication(fakeApp(
+      "aws.s3.enabled" -> "true",
+      "aws.s3.accessKey" -> "accessKey",
+      "aws.s3.secretKey" -> "secretKey",
+      "aws.protocol" -> "HTTP"
+    )) {
+
+      val config = Config(playConf).get.clientConfig
+
+      config.getProtocol mustEqual Protocol.HTTP
+    }
+
     "proxyHost設定がなければNone" in new WithApplication(fakeApp(
       "aws.s3.enabled" -> "true",
       "aws.s3.accessKey" -> "accessKey",
@@ -182,6 +206,18 @@ class PluginSpec extends Specification {
       config must beSome
       config.get.proxyHost must beSome
       config.get.proxyHost.get mustEqual "proxyHost"
+    }
+
+    "proxyHostが設定オブジェクトに設定されている" in new WithApplication(fakeApp(
+      "aws.s3.enabled" -> "true",
+      "aws.s3.accessKey" -> "accessKey",
+      "aws.s3.secretKey" -> "secretKey",
+      "aws.proxyHost" -> "host"
+    )) {
+
+      val config = Config(playConf).get.clientConfig
+
+      config.getProxyHost mustEqual "host"
     }
 
     "proxyPort設定がなければNone" in new WithApplication(fakeApp(
@@ -224,6 +260,18 @@ class PluginSpec extends Specification {
       config.get.proxyPort.get mustEqual 9000
     }
 
+    "proxyPortが設定オブジェクトに設定されている" in new WithApplication(fakeApp(
+      "aws.s3.enabled" -> "true",
+      "aws.s3.accessKey" -> "accessKey",
+      "aws.s3.secretKey" -> "secretKey",
+      "aws.proxyPort" -> 9000
+    )) {
+
+      val config = Config(playConf).get.clientConfig
+
+      config.getProxyPort mustEqual 9000
+    }
+
     "connectionTimeout設定が出来る" in new WithApplication(fakeApp(
       "aws.s3.enabled" -> "true",
       "aws.s3.accessKey" -> "accessKey",
@@ -250,6 +298,18 @@ class PluginSpec extends Specification {
       config must beSome
       config.get.connectionTimeout must beSome
       config.get.connectionTimeout.get mustEqual (10 * 1000)
+    }
+
+    "connectionTimeoutが設定オブジェクトに設定されている" in new WithApplication(fakeApp(
+      "aws.s3.enabled" -> "true",
+      "aws.s3.accessKey" -> "accessKey",
+      "aws.s3.secretKey" -> "secretKey",
+      "aws.connectionTimeout" -> "10s"
+    )) {
+
+      val config = Config(playConf).get.clientConfig
+
+      config.getConnectionTimeout mustEqual (10 * 1000)
     }
 
     "maxConnections設定が出来る" in new WithApplication(fakeApp(
@@ -280,6 +340,18 @@ class PluginSpec extends Specification {
       config.get.maxConnections.get mustEqual 10
     }
 
+    "maxConnectionsが設定オブジェクトに設定されている" in new WithApplication(fakeApp(
+      "aws.s3.enabled" -> "true",
+      "aws.s3.accessKey" -> "accessKey",
+      "aws.s3.secretKey" -> "secretKey",
+      "aws.maxConnections" -> 10
+    )) {
+
+      val config = Config(playConf).get.clientConfig
+
+      config.getMaxConnections mustEqual 10
+    }
+
     "maxErrorRetry設定が出来る" in new WithApplication(fakeApp(
       "aws.s3.enabled" -> "true",
       "aws.s3.accessKey" -> "accessKey",
@@ -306,6 +378,18 @@ class PluginSpec extends Specification {
       config must beSome
       config.get.maxErrorRetry must beSome
       config.get.maxErrorRetry.get mustEqual 10
+    }
+
+    "maxErrorRetryが設定オブジェクトに設定されている" in new WithApplication(fakeApp(
+      "aws.s3.enabled" -> "true",
+      "aws.s3.accessKey" -> "accessKey",
+      "aws.s3.secretKey" -> "secretKey",
+      "aws.maxErrorRetry" -> 10
+    )) {
+
+      val config = Config(playConf).get.clientConfig
+
+      config.getMaxErrorRetry mustEqual 10
     }
 
     "proxyDomain設定が出来る" in new WithApplication(fakeApp(
@@ -336,6 +420,18 @@ class PluginSpec extends Specification {
       config.get.proxyDomain.get mustEqual "domain"
     }
 
+    "proxyDomainが設定オブジェクトに設定されている" in new WithApplication(fakeApp(
+      "aws.s3.enabled" -> "true",
+      "aws.s3.accessKey" -> "accessKey",
+      "aws.s3.secretKey" -> "secretKey",
+      "aws.proxyDomain" -> "domain"
+    )) {
+
+      val config = Config(playConf).get.clientConfig
+
+      config.getProxyDomain mustEqual "domain"
+    }
+
     "proxyPassword設定が出来る" in new WithApplication(fakeApp(
       "aws.s3.enabled" -> "true",
       "aws.s3.accessKey" -> "accessKey",
@@ -362,6 +458,18 @@ class PluginSpec extends Specification {
       config must beSome
       config.get.proxyPassword must beSome
       config.get.proxyPassword.get mustEqual "pass"
+    }
+
+    "proxyPasswordが設定オブジェクトに設定されている" in new WithApplication(fakeApp(
+      "aws.s3.enabled" -> "true",
+      "aws.s3.accessKey" -> "accessKey",
+      "aws.s3.secretKey" -> "secretKey",
+      "aws.proxyPassword" -> "pass"
+    )) {
+
+      val config = Config(playConf).get.clientConfig
+
+      config.getProxyPassword mustEqual "pass"
     }
 
     "proxyUsername設定が出来る" in new WithApplication(fakeApp(
@@ -392,6 +500,18 @@ class PluginSpec extends Specification {
       config.get.proxyUsername.get mustEqual "user"
     }
 
+    "proxyUsernameが設定オブジェクトに設定されている" in new WithApplication(fakeApp(
+      "aws.s3.enabled" -> "true",
+      "aws.s3.accessKey" -> "accessKey",
+      "aws.s3.secretKey" -> "secretKey",
+      "aws.proxyUsername" -> "user"
+    )) {
+
+      val config = Config(playConf).get.clientConfig
+
+      config.getProxyUsername mustEqual "user"
+    }
+
     "proxyWorkstation設定が出来る" in new WithApplication(fakeApp(
       "aws.s3.enabled" -> "true",
       "aws.s3.accessKey" -> "accessKey",
@@ -418,6 +538,18 @@ class PluginSpec extends Specification {
       config must beSome
       config.get.proxyWorkstation must beSome
       config.get.proxyWorkstation.get mustEqual "work"
+    }
+
+    "proxyWorkstationが設定オブジェクトに設定されている" in new WithApplication(fakeApp(
+      "aws.s3.enabled" -> "true",
+      "aws.s3.accessKey" -> "accessKey",
+      "aws.s3.secretKey" -> "secretKey",
+      "aws.proxyWorkstation" -> "work"
+    )) {
+
+      val config = Config(playConf).get.clientConfig
+
+      config.getProxyWorkstation mustEqual "work"
     }
 
     "socketTimeout設定が出来る" in new WithApplication(fakeApp(
@@ -448,6 +580,18 @@ class PluginSpec extends Specification {
       config.get.socketTimeout.get mustEqual (10 * 1000)
     }
 
+    "socketTimeoutが設定オブジェクトに設定されている" in new WithApplication(fakeApp(
+      "aws.s3.enabled" -> "true",
+      "aws.s3.accessKey" -> "accessKey",
+      "aws.s3.secretKey" -> "secretKey",
+      "aws.socketTimeout" -> "10s"
+    )) {
+
+      val config = Config(playConf).get.clientConfig
+
+      config.getSocketTimeout mustEqual (10 * 1000)
+    }
+
     "userAgent設定が出来る" in new WithApplication(fakeApp(
       "aws.s3.enabled" -> "true",
       "aws.s3.accessKey" -> "accessKey",
@@ -476,6 +620,18 @@ class PluginSpec extends Specification {
       config.get.userAgent.get mustEqual "agent"
     }
 
+    "userAgentが設定オブジェクトに設定されている" in new WithApplication(fakeApp(
+      "aws.s3.enabled" -> "true",
+      "aws.s3.accessKey" -> "accessKey",
+      "aws.s3.secretKey" -> "secretKey",
+      "aws.userAgent" -> "agent"
+    )) {
+
+      val config = Config(playConf).get.clientConfig
+
+      config.getUserAgent mustEqual "agent"
+    }
+
     "useReaper設定が出来る" in new WithApplication(fakeApp(
       "aws.s3.enabled" -> "true",
       "aws.s3.accessKey" -> "accessKey",
@@ -502,6 +658,18 @@ class PluginSpec extends Specification {
       config must beSome
       config.get.useReaper must beSome
       config.get.useReaper.get must beTrue
+    }
+
+    "useReaperが設定オブジェクトに設定されている" in new WithApplication(fakeApp(
+      "aws.s3.enabled" -> "true",
+      "aws.s3.accessKey" -> "accessKey",
+      "aws.s3.secretKey" -> "secretKey",
+      "aws.useReaper" -> "true"
+    )) {
+
+      val config = Config(playConf).get.clientConfig
+
+      config.useReaper() must beTrue
     }
   }
 

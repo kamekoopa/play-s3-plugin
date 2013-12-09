@@ -27,13 +27,9 @@ class Config private (
   val useReaper: Option[Boolean] = None
 ) {
 
-  /** この設定からS3のクライアントオブジェクトを生成します
-    *
-    * @return S3クライアント
-    */
-  def createS3Client: AmazonS3Client = {
+  val credential = new BasicAWSCredentials(accessKey, secretKey)
 
-    val credential = new BasicAWSCredentials(accessKey, secretKey)
+  private val _clientConfig = {
 
     val config = new ClientConfiguration()
     config.setProtocol(protocol)
@@ -51,8 +47,17 @@ class Config private (
     userAgent.foreach(config.setUserAgent)
     useReaper.foreach(config.setUseReaper)
 
-    new AmazonS3Client(credential, config)
+    config
   }
+
+  val clientConfig = new ClientConfiguration(_clientConfig)
+
+  /** この設定からS3のクライアントオブジェクトを生成します
+    *
+    * @return S3クライアント
+    */
+  def createS3Client: AmazonS3Client = new AmazonS3Client(credential, _clientConfig)
+
 }
 
 /** コンパニオンオブジェクト */
