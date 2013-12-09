@@ -25,7 +25,7 @@ sbt
 
 resolvers += "repo" at "http://kamekoopa.github.io/play-s3-plugin/repository/"
 
-libraryDependencies += "net.kamekoopa" %% "play-s3-plugin" % "0.1"
+libraryDependencies += "net.kamekoopa" %% "play-s3-plugin" % "0.2"
 
 Application(Scala)
 
