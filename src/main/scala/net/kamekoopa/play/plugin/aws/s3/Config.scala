@@ -7,19 +7,24 @@ import play.api.{PlayException, Configuration}
 
 
 /** Playの設定から構築したプラグインの設定オブジェクト
-  *
-  * @param accessKey アクセスキー
-  * @param secretKey アクセスシークレット
-  * @param protocol プロトコル
-  * @param proxyHost プロキシホスト
-  * @param proxyPort プロキシポート
+  * @see [[com.amazonaws.ClientConfiguration]]
   */
 class Config private (
   val accessKey: String,
   val secretKey: String,
   val protocol: Protocol,
   val proxyHost: Option[String] = None,
-  val proxyPort: Option[Int] = None
+  val proxyPort: Option[Int] = None,
+  val connectionTimeout: Option[Int] = None,
+  val maxConnections: Option[Int] = None,
+  val maxErrorRetry: Option[Int] = None,
+  val proxyDomain: Option[String] = None,
+  val proxyPassword: Option[String] = None,
+  val proxyUsername: Option[String] = None,
+  val proxyWorkstation: Option[String] = None,
+  val socketTimeout: Option[Int] = None,
+  val userAgent: Option[String] = None,
+  val useReaper: Option[Boolean] = None
 ) {
 
   /** この設定からS3のクライアントオブジェクトを生成します
@@ -35,6 +40,16 @@ class Config private (
 
     proxyHost.foreach(config.setProxyHost)
     proxyPort.foreach(config.setProxyPort)
+    connectionTimeout.foreach(config.setConnectionTimeout)
+    maxConnections.foreach(config.setMaxConnections)
+    maxErrorRetry.foreach(config.setMaxErrorRetry)
+    proxyDomain.foreach(config.setProxyDomain)
+    proxyPassword.foreach(config.setProxyPassword)
+    proxyUsername.foreach(config.setProxyUsername)
+    proxyWorkstation.foreach(config.setProxyWorkstation)
+    socketTimeout.foreach(config.setSocketTimeout)
+    userAgent.foreach(config.setUserAgent)
+    useReaper.foreach(config.setUseReaper)
 
     new AmazonS3Client(credential, config)
   }
@@ -75,13 +90,33 @@ object Config {
 
       val proxyHost = playConf.getString("aws.proxyHost").orElse({playConf.getString("aws.s3.proxyHost")})
       val proxyPort = playConf.getInt("aws.proxyPort").orElse({playConf.getInt("aws.s3.proxyPort")})
+      val connectionTimeout = playConf.getMilliseconds("aws.connectionTimeout").orElse({playConf.getMilliseconds("aws.s3.connectionTimeout")}).map(_.toInt)
+      val maxConnections = playConf.getInt("aws.maxConnections").orElse({playConf.getInt("aws.s3.maxConnections")})
+      val maxErrorRetry = playConf.getInt("aws.maxErrorRetry").orElse({playConf.getInt("aws.s3.maxErrorRetry")})
+      val proxyDomain = playConf.getString("aws.proxyDomain").orElse({playConf.getString("aws.s3.proxyDomain")})
+      val proxyPassword = playConf.getString("aws.proxyPassword").orElse({playConf.getString("aws.s3.proxyPassword")})
+      val proxyUsername = playConf.getString("aws.proxyUsername").orElse({playConf.getString("aws.s3.proxyUsername")})
+      val proxyWorkstation = playConf.getString("aws.proxyWorkstation").orElse({playConf.getString("aws.s3.proxyWorkstation")})
+      val socketTimeout = playConf.getMilliseconds("aws.socketTimeout").orElse({playConf.getMilliseconds("aws.s3.socketTimeout")}).map(_.toInt)
+      val userAgent = playConf.getString("aws.userAgent").orElse({playConf.getString("aws.s3.userAgent")})
+      val useReaper = playConf.getBoolean("aws.useReaper").orElse({playConf.getBoolean("aws.s3.useReaper")})
 
       new Config(
         accessKey,
         secretKey,
         protocol,
         proxyHost,
-        proxyPort
+        proxyPort,
+        connectionTimeout,
+        maxConnections,
+        maxErrorRetry,
+        proxyDomain,
+        proxyPassword,
+        proxyUsername,
+        proxyWorkstation,
+        socketTimeout,
+        userAgent,
+        useReaper
       )
     }
   }
