@@ -13,18 +13,18 @@ class Config private (
   val accessKey: String,
   val secretKey: String,
   val protocol: Protocol,
-  val proxyHost: Option[String] = None,
-  val proxyPort: Option[Int] = None,
-  val connectionTimeout: Option[Int] = None,
-  val maxConnections: Option[Int] = None,
-  val maxErrorRetry: Option[Int] = None,
-  val proxyDomain: Option[String] = None,
-  val proxyPassword: Option[String] = None,
-  val proxyUsername: Option[String] = None,
-  val proxyWorkstation: Option[String] = None,
-  val socketTimeout: Option[Int] = None,
-  val userAgent: Option[String] = None,
-  val useReaper: Option[Boolean] = None
+  val proxyHost: Option[String],
+  val proxyPort: Option[Int],
+  val connectionTimeout: Option[Int],
+  val maxConnections: Option[Int],
+  val maxErrorRetry: Option[Int],
+  val proxyDomain: Option[String],
+  val proxyPassword: Option[String],
+  val proxyUsername: Option[String],
+  val proxyWorkstation: Option[String],
+  val socketTimeout: Option[Int],
+  val userAgent: Option[String],
+  val useReaper: Option[Boolean]
 ) {
 
   val credential = new BasicAWSCredentials(accessKey, secretKey)
