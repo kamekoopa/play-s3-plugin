@@ -78,14 +78,13 @@ object Config {
     //aws.*** より aws.s3.***の方が優先する
     for {
       enabled <- playConf.getBoolean("aws.s3.enabled") if enabled
-      accessKey <- playConf.getString("aws.accessKey").orElse{playConf.getString("aws.s3.accessKey")}
-      secretKey <- playConf.getString("aws.secretKey").orElse{playConf.getString("aws.s3.secretKey")}
+      accessKey <- get("accessKey", playConf.getString(_: String))
+      secretKey <- get("secretKey", playConf.getString(_: String))
     } yield {
 
       //デフォルトプロトコル、あるいは不明なプロトコル指定はHTTPSとして扱う
       val protocol = try {
-        playConf
-          .getString("aws.protocol", protocols).orElse({playConf.getString("aws.s3.protocol", protocols)})
+        get("protocol", playConf.getString(_: String, protocols))
           .map(Protocol.valueOf)
           .getOrElse(Protocol.HTTPS)
       } catch {
@@ -93,18 +92,18 @@ object Config {
         case e: Throwable => throw e
       }
 
-      val proxyHost = playConf.getString("aws.proxyHost").orElse({playConf.getString("aws.s3.proxyHost")})
-      val proxyPort = playConf.getInt("aws.proxyPort").orElse({playConf.getInt("aws.s3.proxyPort")})
-      val connectionTimeout = playConf.getMilliseconds("aws.connectionTimeout").orElse({playConf.getMilliseconds("aws.s3.connectionTimeout")}).map(_.toInt)
-      val maxConnections = playConf.getInt("aws.maxConnections").orElse({playConf.getInt("aws.s3.maxConnections")})
-      val maxErrorRetry = playConf.getInt("aws.maxErrorRetry").orElse({playConf.getInt("aws.s3.maxErrorRetry")})
-      val proxyDomain = playConf.getString("aws.proxyDomain").orElse({playConf.getString("aws.s3.proxyDomain")})
-      val proxyPassword = playConf.getString("aws.proxyPassword").orElse({playConf.getString("aws.s3.proxyPassword")})
-      val proxyUsername = playConf.getString("aws.proxyUsername").orElse({playConf.getString("aws.s3.proxyUsername")})
-      val proxyWorkstation = playConf.getString("aws.proxyWorkstation").orElse({playConf.getString("aws.s3.proxyWorkstation")})
-      val socketTimeout = playConf.getMilliseconds("aws.socketTimeout").orElse({playConf.getMilliseconds("aws.s3.socketTimeout")}).map(_.toInt)
-      val userAgent = playConf.getString("aws.userAgent").orElse({playConf.getString("aws.s3.userAgent")})
-      val useReaper = playConf.getBoolean("aws.useReaper").orElse({playConf.getBoolean("aws.s3.useReaper")})
+      val proxyHost = get("proxyHost", playConf.getString(_: String))
+      val proxyPort = get("proxyPort", playConf.getInt)
+      val connectionTimeout = get("connectionTimeout", playConf.getMilliseconds).map(_.toInt)
+      val maxConnections = get("maxConnections", playConf.getInt)
+      val maxErrorRetry = get("maxErrorRetry", playConf.getInt)
+      val proxyDomain = get("proxyDomain", playConf.getString(_: String))
+      val proxyPassword = get("proxyPassword", playConf.getString(_: String))
+      val proxyUsername = get("proxyUsername", playConf.getString(_: String))
+      val proxyWorkstation = get("proxyWorkstation", playConf.getString(_: String))
+      val socketTimeout = get("socketTimeout", playConf.getMilliseconds).map(_.toInt)
+      val userAgent = get("userAgent", playConf.getString(_: String))
+      val useReaper = get("useReaper", playConf.getBoolean)
 
       new Config(
         accessKey,
@@ -124,5 +123,16 @@ object Config {
         useReaper
       )
     }
+  }
+
+  /** Playの設定オブジェクトから設定値を取得するヘルパー
+    *
+    * @param key 設定キー値。aws.$keyにない場合はaws.s3.$keyから取得する
+    * @param f キー値から設定値のOptionを取得する関数
+    * @tparam T 設定値の型
+    * @return 設定値のOption
+    */
+  private def get[T](key: String, f: String => Option[T]): Option[T] = {
+    f(s"aws.$key").orElse({f(s"aws.s3.$key")})
   }
 }
